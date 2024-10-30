@@ -119,14 +119,12 @@ let currentPickingId = null; // 現在のピッキングIDを格納
 
 // ページ読み込み時にイベントリスナーを設定
 document.addEventListener("DOMContentLoaded", function () {
-    // ピッキングIDのエンターキー処理
     document.getElementById("pickingIdInput").addEventListener("keydown", function (event) {
         if (event.key === "Enter") {
             fetchPickingData();
         }
     });
 
-    // バーコード入力のエンターキー処理
     document.getElementById("barcodeInput").addEventListener("keydown", function (event) {
         if (event.key === "Enter") {
             scanBarcode();
@@ -144,26 +142,54 @@ function fetchPickingData() {
         return;
     }
 
-    currentPickingId = pickingId; // ピッキングIDを設定
+    if (currentPickingId && currentPickingId !== pickingId) {
+        resetScannedCount(currentPickingId); // 異なるピッキングIDの場合にscanned_countをリセット
+    }
+
+    currentPickingId = pickingId;
     db.collection("Pickings").doc(currentPickingId).get()
         .then((doc) => {
             if (doc.exists) {
                 const data = doc.data();
-                displayItemList(data.items); // アイテムリストを表示
-                document.getElementById("barcodeInput").focus(); // バーコード入力にフォーカス
+                displayItemList(data.items);
+                document.getElementById("barcodeInput").focus();
             } else {
                 alert("該当するピッキングIDが見つかりませんでした。");
-                currentPickingId = null; // ピッキングIDをリセット
-                pickingIdInput.focus(); // フォーカスをピッキングID入力に戻す
+                currentPickingId = null;
+                pickingIdInput.focus();
             }
         })
         .catch((error) => {
             console.error("エラーが発生しました:", error);
-            currentPickingId = null; // エラー発生時もピッキングIDをリセット
-            pickingIdInput.focus(); // フォーカスをピッキングID入力に戻す
+            currentPickingId = null;
+            pickingIdInput.focus();
         })
         .finally(() => {
-            pickingIdInput.value = ""; // フォームをリセット
+            pickingIdInput.value = "";
+        });
+}
+
+// 異なるピッキングIDが入力された場合にscanned_countをリセット
+function resetScannedCount(pickingId) {
+    db.collection("Pickings").doc(pickingId).get()
+        .then((doc) => {
+            if (doc.exists) {
+                const data = doc.data();
+                const resetItems = data.items.map((item) => {
+                    item.scanned_count = 0;
+                    item.item_status = false;
+                    return item;
+                });
+
+                // Firestoreにリセット状態を更新
+                db.collection("Pickings").doc(pickingId).update({
+                    items: resetItems,
+                    status: false
+                });
+            }
+        })
+        .catch((error) => {
+            console.error("scanned_countのリセットに失敗しました:", error);
         });
 }
 
@@ -171,7 +197,7 @@ function fetchPickingData() {
 function displayItemList(items) {
     const itemListContainer = document.getElementById("itemListContainer");
     const itemList = document.getElementById("itemList");
-    itemList.innerHTML = ""; // 既存のリストをクリア
+    itemList.innerHTML = "";
 
     items.forEach((item) => {
         if (item.scanned_count === undefined) {
@@ -179,7 +205,7 @@ function displayItemList(items) {
         }
 
         const listItem = document.createElement("li");
-        listItem.textContent = `${item.item_name} ${item.barcode}- ステータス: ${item.item_status ? '完了' : '未検品'} (${item.scanned_count}/${item.quantity})`;
+        listItem.textContent = `${item.item_name} ${item.barcode} - ステータス: ${item.item_status ? '完了' : '未検品'} (${item.scanned_count}/${item.quantity})`;
         listItem.id = `item-${item.item_id}`;
         itemList.appendChild(listItem);
     });
@@ -212,7 +238,7 @@ function scanBarcode() {
 
                         // 表示を更新
                         document.getElementById(`item-${item.item_id}`).textContent = 
-                            `${item.item_name} - ステータス: ${item.item_status ? '完了' : '検品中'} (${item.scanned_count}/${item.quantity})`;
+                            `${item.item_name} ${item.barcode} - ステータス: ${item.item_status ? '完了' : '検品中'} (${item.scanned_count}/${item.quantity})`;
                     }
 
                     if (!item.item_status) {
@@ -229,13 +255,12 @@ function scanBarcode() {
                 }).then(() => {
                     document.getElementById("statusMessage").innerText = allInspected ? "全てのアイテムが検品完了しました。" : "アイテムの検品が進行中です。";
                     
-                    // 検品完了時にリストをリフレッシュ
                     if (allInspected) {
                         displayItemList(updatedItems);
-                        currentPickingId = null; // ピッキングIDをリセット
-                        document.getElementById("pickingIdInput").focus(); // フォーカスをピッキングID入力に戻す
+                        currentPickingId = null;
+                        document.getElementById("pickingIdInput").focus();
                     } else {
-                        barcodeInput.focus(); // フォーカスをバーコード入力に維持
+                        barcodeInput.focus();
                     }
                 });
             }
@@ -244,6 +269,6 @@ function scanBarcode() {
             console.error("エラーが発生しました:", error);
         })
         .finally(() => {
-            barcodeInput.value = ""; // バーコード入力欄をクリア
+            barcodeInput.value = "";
         });
 }
