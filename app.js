@@ -119,13 +119,15 @@ let currentPickingId = null; // 現在のピッキングIDを格納
 
 // ピッキングIDでデータを取得して表示
 function fetchPickingData() {
-    const pickingIdInput = document.getElementById("pickingIdInput").value.trim();
-    if (!pickingIdInput) {
+    const pickingIdInput = document.getElementById("pickingIdInput");
+    const pickingId = pickingIdInput.value.trim();
+
+    if (!pickingId) {
         alert("ピッキングIDを入力してください。");
         return;
     }
 
-    currentPickingId = pickingIdInput; // ピッキングIDを設定
+    currentPickingId = pickingId; // ピッキングIDを設定
     db.collection("Pickings").doc(currentPickingId).get()
         .then((doc) => {
             if (doc.exists) {
@@ -139,6 +141,9 @@ function fetchPickingData() {
         .catch((error) => {
             console.error("エラーが発生しました:", error);
             currentPickingId = null; // エラー発生時もピッキングIDをリセット
+        })
+        .finally(() => {
+            pickingIdInput.value = ""; // フォームをリセット
         });
 }
 
@@ -164,8 +169,10 @@ function displayItemList(items) {
 
 // バーコードスキャン機能
 function scanBarcode() {
-    const barcodeInput = document.getElementById("barcodeInput").value.trim();
-    if (!barcodeInput || !currentPickingId) {
+    const barcodeInput = document.getElementById("barcodeInput");
+    const barcode = barcodeInput.value.trim();
+
+    if (!barcode || !currentPickingId) {
         alert("バーコードとピッキングIDを入力してください。");
         return;
     }
@@ -177,7 +184,7 @@ function scanBarcode() {
                 let allInspected = true;
 
                 const updatedItems = data.items.map((item) => {
-                    if (item.barcode === barcodeInput) {
+                    if (item.barcode === barcode) {
                         item.scanned_count = (item.scanned_count || 0) + 1;
                         if (item.scanned_count >= item.quantity) {
                             item.item_status = true;
@@ -211,5 +218,8 @@ function scanBarcode() {
         })
         .catch((error) => {
             console.error("エラーが発生しました:", error);
+        })
+        .finally(() => {
+            barcodeInput.value = ""; // フォームをリセット
         });
 }
