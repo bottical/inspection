@@ -19,16 +19,18 @@ const clientSettings = {
         user_id: 1,
         item_id: 22,
         item_name: 23,
+        item_quantity: 24,
+        item_barcode: 25,
         created_at: 5
     },
     clientB: {
         picking_id: 1,
         user_id: 2,
         item_id: 0,
-        status: 4,
-        inspection_date: 5,
+        item_quantity: 3,
+        item_barcode: 4,
         created_at: 3
-    },
+    }
     // 他のクライアントの設定も同様に追加
 };
 
@@ -62,31 +64,48 @@ function parseCSV(text, clientConfig) {
     // ヘッダーをスキップする場合は最初の行を削除
     const startIndex = includeHeader ? 1 : 0;
 
+    // ピッキングIDごとにデータをまとめるためのオブジェクト
+    const pickingsData = {};
+
     for (let i = startIndex; i < rows.length; i++) {
         const row = rows[i];
         if (row.trim()) {  // 空行のスキップ
             const columns = row.split(",");
-            addRowToFirestore(columns, clientConfig);
+            const pickingId = columns[clientConfig.picking_id];
+            
+            // アイテム情報をまとめたオブジェクト
+            const itemData = {
+                item_id: columns[clientConfig.item_id],
+                item_name: columns[clientConfig.item_name],
+                quantity: parseInt(columns[clientConfig.item_quantity], 10),
+                barcode: columns[clientConfig.item_barcode]
+            };
+
+            // すでにピッキングIDが存在するかチェック
+            if (pickingsData[pickingId]) {
+                // 存在する場合はアイテムを追加
+                pickingsData[pickingId].items.push(itemData);
+            } else {
+                // 新しいピッキングデータを作成
+                pickingsData[pickingId] = {
+                    picking_id: pickingId,
+                    user_id: getCurrentUserId(),
+                    items: [itemData],
+                    status: false,
+                    created_at: firebase.firestore.FieldValue.serverTimestamp()
+                };
+            }
         }
     }
 
+    // Firestoreにデータを追加
+    for (const pickingId in pickingsData) {
+        db.collection("Pickings").doc(pickingId).set(pickingsData[pickingId])
+            .then(() => console.log(`ピッキングID ${pickingId} のデータが追加されました`))
+            .catch(error => console.error(`Error adding data for picking_id ${pickingId}:`, error));
+    }
+
     document.getElementById("statusMessage").innerText = "データがFirebaseに追加されました";
-}
-
-// Firestoreにデータ追加
-function addRowToFirestore(columns, clientConfig) {
-    const pickingData = {
-        picking_id: columns[clientConfig.picking_id],
-        user_id: getCurrentUserId(),
-        item_id: columns[clientConfig.item_id],
-        status: false, // 初期状態は未完了
-        inspection_date: columns[clientConfig.inspection_date] || null,
-        created_at: firebase.firestore.FieldValue.serverTimestamp()
-    };
-
-    db.collection("Pickings").add(pickingData)
-        .then(() => console.log("Pickings データが追加されました"))
-        .catch(error => console.error("Error adding Pickings data:", error));
 }
 
 // ログインユーザーのIDを取得する関数（仮）
