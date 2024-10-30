@@ -12,7 +12,7 @@
 </head>
 
 <body>
-    <h1>検品アプリ</h1>
+    <h1>CSV登録</h1>
     <input type="file" id="csvFileInput" accept=".csv" />
     <label>
         <input type="checkbox" id="includeHeader" checked> ヘッダーを含む
@@ -24,6 +24,12 @@
     <button onclick="importCSV()">CSVからインポート</button>
 
     <div id="statusMessage"></div>
+
+        <!-- 検品ページへのリンク -->
+    <div style="margin-top: 20px;">
+        <a href="inspection.html" class="button-link">検品ページへ移動</a>
+    </div>
+    
 </body>
 </html>
 
