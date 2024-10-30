@@ -78,7 +78,8 @@ function parseCSV(text, clientConfig) {
                 item_name: columns[clientConfig.item_name],
                 quantity: parseInt(columns[clientConfig.item_quantity], 10),
                 barcode: columns[clientConfig.item_barcode],
-                ins_flg: 1
+                ins_flg: 1,
+                item_status: false
             };
 
             // すでにピッキングIDが存在するかチェック
