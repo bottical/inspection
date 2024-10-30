@@ -151,8 +151,14 @@ function fetchPickingData() {
         .then((doc) => {
             if (doc.exists) {
                 const data = doc.data();
-                displayItemList(data.items);
-                document.getElementById("barcodeInput").focus();
+                if (data.status === true) {
+                    alert("このピッキングIDはすでに検品済みです。");
+                    currentPickingId = null;
+                    pickingIdInput.focus();
+                } else {
+                    displayItemList(data.items);
+                    document.getElementById("barcodeInput").focus();
+                }
             } else {
                 alert("該当するピッキングIDが見つかりませんでした。");
                 currentPickingId = null;
@@ -231,14 +237,18 @@ function scanBarcode() {
 
                 const updatedItems = data.items.map((item) => {
                     if (item.barcode === barcode) {
-                        item.scanned_count = (item.scanned_count || 0) + 1;
                         if (item.scanned_count >= item.quantity) {
-                            item.item_status = true;
-                        }
+                            alert("このアイテムはすでに設定された数量を超えています。");
+                        } else {
+                            item.scanned_count = (item.scanned_count || 0) + 1;
+                            if (item.scanned_count >= item.quantity) {
+                                item.item_status = true;
+                            }
 
-                        // 表示を更新
-                        document.getElementById(`item-${item.item_id}`).textContent = 
-                            `${item.item_name} 【${item.barcode}】 - 状態: ${item.item_status ? '完了' : '検品中'} (${item.scanned_count}/${item.quantity})`;
+                            // 表示を更新
+                            document.getElementById(`item-${item.item_id}`).textContent = 
+                                `${item.item_name} 【${item.barcode}】 - 状態: ${item.item_status ? '完了' : '検品中'} (${item.scanned_count}/${item.quantity})`;
+                        }
                     }
 
                     if (!item.item_status) {
