@@ -41,26 +41,6 @@ button:hover {
     transform: translateY(-2px);
 }
 
-/* ボタンのスタイル */
-input {
-    background-color: #0074d9;
-    color: white;
-    padding: 10px 20px;
-    font-size: 1em;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-top: 10px;
-}
-
-/* ボタンホバーエフェクト */
-input:hover {
-    background-color: #005bb5;
-    transform: translateY(-2px);
-}
-
 /* 各セクションのスタイル */
 div {
     background-color: #ffffff;
