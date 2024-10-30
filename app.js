@@ -1,11 +1,11 @@
 // Firebaseの設定
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyBzWNEqp5z4NWC-9tEOjSMO8CLQKKGfSOY",
+    authDomain: "inspection-a99de.firebaseapp.com",
+    projectId: "inspection-a99de",
+    storageBucket: "inspection-a99de.appspot.com",
+    messagingSenderId: "1048779389002",
+    appId: "1:1048779389002:web:b09892b9c9d31674054eb3"
 };
 
 // Firebaseを初期化
