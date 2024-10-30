@@ -115,37 +115,22 @@ function getCurrentUserId() {
     return "current_user_id"; // 例として仮のIDを返しています
 }
 
-let currentPickingId = null;
+let currentPickingId = null; // 現在のピッキングIDを格納
 
-// picking_idとバーコードの処理を一つにまとめた関数
-function processInput() {
-    const inputField = document.getElementById("inputField");
-    const inputValue = inputField.value.trim();
-
-    if (!inputValue) {
-        alert("ピッキングIDまたはバーコードを入力してください。");
+// ピッキングIDでデータを取得して表示
+function fetchPickingData() {
+    const pickingIdInput = document.getElementById("pickingIdInput").value.trim();
+    if (!pickingIdInput) {
+        alert("ピッキングIDを入力してください。");
         return;
     }
 
-    // ピッキングIDがまだ設定されていない場合（最初の入力）
-    if (!currentPickingId) {
-        currentPickingId = inputValue;
-        fetchPickingData(currentPickingId);
-    } else {
-        // ピッキングIDが既に設定されている場合、バーコードのスキャン処理
-        scanBarcode(inputValue);
-    }
-
-    inputField.value = ""; // 入力フィールドをリセット
-}
-
-// ピッキングIDでデータを取得して表示
-function fetchPickingData(pickingId) {
-    db.collection("Pickings").doc(pickingId).get()
+    currentPickingId = pickingIdInput; // ピッキングIDを設定
+    db.collection("Pickings").doc(currentPickingId).get()
         .then((doc) => {
             if (doc.exists) {
                 const data = doc.data();
-                displayItemList(data.items, pickingId);
+                displayItemList(data.items); // アイテムリストを表示
             } else {
                 alert("該当するピッキングIDが見つかりませんでした。");
                 currentPickingId = null; // ピッキングIDをリセット
@@ -153,18 +138,17 @@ function fetchPickingData(pickingId) {
         })
         .catch((error) => {
             console.error("エラーが発生しました:", error);
-            currentPickingId = null; // エラーが発生した場合もピッキングIDをリセット
+            currentPickingId = null; // エラー発生時もピッキングIDをリセット
         });
 }
 
 // アイテムリストの表示
-function displayItemList(items, pickingId) {
+function displayItemList(items) {
     const itemListContainer = document.getElementById("itemListContainer");
     const itemList = document.getElementById("itemList");
     itemList.innerHTML = ""; // 既存のリストをクリア
 
     items.forEach((item) => {
-        // `scanned_count`がない場合は0で初期化
         if (item.scanned_count === undefined) {
             item.scanned_count = 0;
         }
@@ -179,8 +163,12 @@ function displayItemList(items, pickingId) {
 }
 
 // バーコードスキャン機能
-function scanBarcode(barcode) {
-    if (!currentPickingId) return; // ピッキングIDが設定されていない場合は処理をスキップ
+function scanBarcode() {
+    const barcodeInput = document.getElementById("barcodeInput").value.trim();
+    if (!barcodeInput || !currentPickingId) {
+        alert("バーコードとピッキングIDを入力してください。");
+        return;
+    }
 
     db.collection("Pickings").doc(currentPickingId).get()
         .then((doc) => {
@@ -189,11 +177,8 @@ function scanBarcode(barcode) {
                 let allInspected = true;
 
                 const updatedItems = data.items.map((item) => {
-                    // 対象アイテムのバーコードが一致した場合
-                    if (item.barcode === barcode) {
+                    if (item.barcode === barcodeInput) {
                         item.scanned_count = (item.scanned_count || 0) + 1;
-
-                        // `scanned_count`が`item_quantity`に達したら検品完了
                         if (item.scanned_count >= item.quantity) {
                             item.item_status = true;
                         }
@@ -203,7 +188,6 @@ function scanBarcode(barcode) {
                             `${item.item_name} - 検品済み: ${item.item_status ? '完了' : '未検品'} (${item.scanned_count}/${item.quantity})`;
                     }
 
-                    // 検品が完了していないアイテムがあるかチェック
                     if (!item.item_status) {
                         allInspected = false;
                     }
@@ -214,13 +198,13 @@ function scanBarcode(barcode) {
                 // Firestoreに更新
                 db.collection("Pickings").doc(currentPickingId).update({
                     items: updatedItems,
-                    status: allInspected // 全アイテムが検品済みならstatusをtrueに
+                    status: allInspected
                 }).then(() => {
                     document.getElementById("statusMessage").innerText = allInspected ? "全てのアイテムが検品完了しました。" : "アイテムの検品が進行中です。";
                     
                     // 検品完了時にリストをリフレッシュ
                     if (allInspected) {
-                        displayItemList(updatedItems, currentPickingId);
+                        displayItemList(updatedItems);
                     }
                 });
             }
