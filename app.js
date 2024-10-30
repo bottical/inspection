@@ -16,12 +16,10 @@ const db = firebase.firestore();
 const clientSettings = {
     clientA: {
         picking_id: 12,
-        user_id: 1,
         item_id: 22,
         item_name: 23,
         item_quantity: 24,
         item_barcode: 25,
-        created_at: 5
     },
     clientB: {
         picking_id: 1,
