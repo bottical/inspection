@@ -114,3 +114,96 @@ function getCurrentUserId() {
     // 実際のログインユーザー情報を取得する処理をここで実装する必要があります
     return "current_user_id"; // 例として仮のIDを返しています
 }
+
+let currentPickingId = null;
+
+// picking_idとバーコードの処理を一つにまとめた関数
+function processInput() {
+    const inputField = document.getElementById("inputField");
+    const inputValue = inputField.value.trim();
+
+    if (!inputValue) {
+        alert("ピッキングIDまたはバーコードを入力してください。");
+        return;
+    }
+
+    // ピッキングIDがまだ設定されていない場合（最初の入力）
+    if (!currentPickingId) {
+        currentPickingId = inputValue;
+        fetchPickingData(currentPickingId);
+    } else {
+        // ピッキングIDが既に設定されている場合、バーコードのスキャン処理
+        scanBarcode(inputValue);
+    }
+
+    inputField.value = ""; // 入力フィールドをリセット
+}
+
+// ピッキングIDでデータを取得して表示
+function fetchPickingData(pickingId) {
+    db.collection("Pickings").doc(pickingId).get()
+        .then((doc) => {
+            if (doc.exists) {
+                const data = doc.data();
+                displayItemList(data.items, pickingId);
+            } else {
+                alert("該当するピッキングIDが見つかりませんでした。");
+                currentPickingId = null; // ピッキングIDをリセット
+            }
+        })
+        .catch((error) => {
+            console.error("エラーが発生しました:", error);
+            currentPickingId = null; // エラーが発生した場合もピッキングIDをリセット
+        });
+}
+
+// アイテムリストの表示
+function displayItemList(items, pickingId) {
+    const itemListContainer = document.getElementById("itemListContainer");
+    const itemList = document.getElementById("itemList");
+    itemList.innerHTML = ""; // 既存のリストをクリア
+
+    items.forEach((item) => {
+        const listItem = document.createElement("li");
+        listItem.textContent = `${item.item_name} - 検品済み: ${item.item_status ? '完了' : '未検品'}`;
+        listItem.id = `item-${item.item_id}`;
+        itemList.appendChild(listItem);
+    });
+
+    itemListContainer.style.display = "block";
+}
+
+// バーコードスキャン機能
+function scanBarcode(barcode) {
+    if (!currentPickingId) return; // ピッキングIDが設定されていない場合は処理をスキップ
+
+    db.collection("Pickings").doc(currentPickingId).get()
+        .then((doc) => {
+            if (doc.exists) {
+                const data = doc.data();
+                let allInspected = true;
+
+                const updatedItems = data.items.map((item) => {
+                    if (item.barcode === barcode) {
+                        item.item_status = true;
+                        document.getElementById(`item-${item.item_id}`).textContent = `${item.item_name} - 検品済み: 完了`;
+                    }
+                    if (!item.item_status) {
+                        allInspected = false; // 検品が完了していないアイテムがある場合
+                    }
+                    return item;
+                });
+
+                // Firestoreに更新
+                db.collection("Pickings").doc(currentPickingId).update({
+                    items: updatedItems,
+                    status: allInspected // 全アイテムが検品済みならstatusをtrueに
+                }).then(() => {
+                    document.getElementById("statusMessage").innerText = allInspected ? "全てのアイテムが検品完了しました。" : "アイテムの検品が完了しました。";
+                });
+            }
+        })
+        .catch((error) => {
+            console.error("エラーが発生しました:", error);
+        });
+}
