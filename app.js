@@ -1,3 +1,17 @@
+// Firebaseの設定
+const firebaseConfig = {
+    apiKey: "AIzaSyBzWNEqp5z4NWC-9tEOjSMO8CLQKKGfSOY",
+    authDomain: "inspection-a99de.firebaseapp.com",
+    projectId: "inspection-a99de",
+    storageBucket: "inspection-a99de.appspot.com",
+    messagingSenderId: "1048779389002",
+    appId: "1:1048779389002:web:b09892b9c9d31674054eb3"
+};
+
+// Firebaseを初期化
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore(app);
+
 // クライアントごとの列インデックス設定
 const clientSettings = {
     clientA: {
@@ -18,20 +32,6 @@ const clientSettings = {
     },
     // 他のクライアントの設定も同様に追加
 };
-
-// Firebaseの設定
-const firebaseConfig = {
-    apiKey: "AIzaSyBzWNEqp5z4NWC-9tEOjSMO8CLQKKGfSOY",
-    authDomain: "inspection-a99de.firebaseapp.com",
-    projectId: "inspection-a99de",
-    storageBucket: "inspection-a99de.appspot.com",
-    messagingSenderId: "1048779389002",
-    appId: "1:1048779389002:web:b09892b9c9d31674054eb3"
-};
-
-// Firebaseを初期化
-const app = firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore(app);
 
 // CSV読み込み機能
 function importCSV() {
