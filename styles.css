@@ -50,40 +50,44 @@ button:hover {
     transform: translateY(-2px);
 }
 
-/* アイテムリストのスタイル */
+/* アイテムリスト全体のスタイル */
 #itemListContainer {
+    width: 100%;
+    max-width: 600px;
     background-color: #ffffff;
     border: 1px solid #ddd;
-    padding: 20px;
     border-radius: 10px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 800px;
+    padding: 20px;
     margin-top: 20px;
 }
 
-#itemListContainer h2 {
-    font-size: 1.5em;
-    color: #333;
-    margin-bottom: 10px;
+/* アイテムリストのヘッダー */
+#itemListHeader {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    font-weight: bold;
+    text-align: left;
+    padding: 10px 0;
+    border-bottom: 2px solid #ddd;
 }
 
-/* アイテムリストのスタイル */
+/* 各アイテムのスタイル */
 #itemList {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
 #itemList li {
-    font-size: 1em;
-    padding: 10px;
-    border-bottom: 1px solid #e0e0e0;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
 }
 
-/* 検品済みアイテムのスタイル */
+/* 完了したアイテムのスタイル */
 #itemList li.complete {
     color: #28a745;
     font-weight: bold;
