@@ -5,24 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>検品ページ</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="app.js" defer></script>
 </head>
 <body>
     <h1>検品ページ</h1>
+
+    <!-- ピッキングID入力欄 -->
     <div>
-        <label for="inputField">ピッキングID/バーコードを入力:</label>
-        <input type="text" id="inputField" placeholder="ピッキングIDまたはバーコードを入力">
-        <button onclick="processInput()">送信</button>
+        <label for="pickingIdInput">ピッキングIDを入力:</label>
+        <input type="text" id="pickingIdInput" placeholder="ピッキングIDを入力">
+        <button onclick="fetchPickingData()">検索</button>
     </div>
     
+    <!-- アイテムリストの表示領域 -->
     <div id="itemListContainer" style="display: none;">
         <h2>アイテムリスト</h2>
         <ul id="itemList"></ul>
     </div>
     
+    <!-- バーコード入力欄 -->
+    <div>
+        <label for="barcodeInput">アイテムバーコード:</label>
+        <input type="text" id="barcodeInput" placeholder="バーコードをスキャン">
+        <button onclick="scanBarcode()">スキャン</button>
+    </div>
+
     <p id="statusMessage"></p>
 
     <script src="app.js"></script>
