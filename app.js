@@ -33,9 +33,6 @@ const clientSettings = {
     // 他のクライアントの設定も同様に追加
 };
 
-// 使用するクライアントを選択
-const currentClient = clientSettings.clientA;
-
 // CSV読み込み機能
 function importCSV() {
     const fileInput = document.getElementById("csvFileInput").files[0];
@@ -43,6 +40,9 @@ function importCSV() {
         alert("CSVファイルを選択してください。");
         return;
     }
+
+    // 使用するクライアントを選択（例としてclientAを使用）
+    const currentClient = clientSettings.clientA;
 
     const encoding = document.querySelector('input[name="encoding"]:checked').value;
     const reader = new FileReader();
