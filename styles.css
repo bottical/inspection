@@ -65,7 +65,7 @@ button:hover {
 /* アイテムリストのヘッダー */
 #itemListHeader {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 3fr 3fr 1fr 1fr;
     font-weight: bold;
     text-align: left;
     padding: 10px 0;
