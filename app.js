@@ -212,7 +212,7 @@ function scanBarcode() {
 
                         // 表示を更新
                         document.getElementById(`item-${item.item_id}`).textContent = 
-                            `${item.item_name} - 検品済み: ${item.item_status ? '完了' : '未検品'} (${item.scanned_count}/${item.quantity})`;
+                            `${item.item_name} - ステータス: ${item.item_status ? '完了' : '検品中'} (${item.scanned_count}/${item.quantity})`;
                     }
 
                     if (!item.item_status) {
