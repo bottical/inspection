@@ -164,8 +164,13 @@ function displayItemList(items, pickingId) {
     itemList.innerHTML = ""; // 既存のリストをクリア
 
     items.forEach((item) => {
+        // `scanned_count`がない場合は0で初期化
+        if (item.scanned_count === undefined) {
+            item.scanned_count = 0;
+        }
+
         const listItem = document.createElement("li");
-        listItem.textContent = `${item.item_name} - 検品済み: ${item.item_status ? '完了' : '未検品'}`;
+        listItem.textContent = `${item.item_name} - 検品済み: ${item.item_status ? '完了' : '未検品'} (${item.scanned_count}/${item.quantity})`;
         listItem.id = `item-${item.item_id}`;
         itemList.appendChild(listItem);
     });
@@ -184,13 +189,25 @@ function scanBarcode(barcode) {
                 let allInspected = true;
 
                 const updatedItems = data.items.map((item) => {
+                    // 対象アイテムのバーコードが一致した場合
                     if (item.barcode === barcode) {
-                        item.item_status = true;
-                        document.getElementById(`item-${item.item_id}`).textContent = `${item.item_name} - 検品済み: 完了`;
+                        item.scanned_count = (item.scanned_count || 0) + 1;
+
+                        // `scanned_count`が`item_quantity`に達したら検品完了
+                        if (item.scanned_count >= item.quantity) {
+                            item.item_status = true;
+                        }
+
+                        // 表示を更新
+                        document.getElementById(`item-${item.item_id}`).textContent = 
+                            `${item.item_name} - 検品済み: ${item.item_status ? '完了' : '未検品'} (${item.scanned_count}/${item.quantity})`;
                     }
+
+                    // 検品が完了していないアイテムがあるかチェック
                     if (!item.item_status) {
-                        allInspected = false; // 検品が完了していないアイテムがある場合
+                        allInspected = false;
                     }
+
                     return item;
                 });
 
@@ -199,7 +216,7 @@ function scanBarcode(barcode) {
                     items: updatedItems,
                     status: allInspected // 全アイテムが検品済みならstatusをtrueに
                 }).then(() => {
-                    document.getElementById("statusMessage").innerText = allInspected ? "全てのアイテムが検品完了しました。" : "アイテムの検品が完了しました。";
+                    document.getElementById("statusMessage").innerText = allInspected ? "全てのアイテムが検品完了しました。" : "アイテムの検品が進行中です。";
                     
                     // 検品完了時にリストをリフレッシュ
                     if (allInspected) {
