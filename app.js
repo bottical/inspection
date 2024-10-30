@@ -203,7 +203,7 @@ function resetScannedCount(pickingId) {
 function displayItemList(items) {
     const itemListContainer = document.getElementById("itemListContainer");
     const itemList = document.getElementById("itemList");
-    itemList.innerHTML = "";
+    itemList.innerHTML = ""; // 既存のリストをクリア
 
     items.forEach((item) => {
         if (item.scanned_count === undefined) {
@@ -211,8 +211,16 @@ function displayItemList(items) {
         }
 
         const listItem = document.createElement("li");
-        listItem.textContent = `${item.item_name} 【${item.barcode}】 - 状態: ${item.item_status ? '完了' : '未検品'} (${item.scanned_count}/${item.quantity})`;
-        listItem.id = `item-${item.item_id}`;
+        listItem.className = item.item_status ? "complete" : "";
+
+        // 各項目を列に分けて表示
+        listItem.innerHTML = `
+            <div>${item.item_name}</div>
+            <div>${item.barcode}</div>
+            <div>${item.item_status ? '完了' : '未検品'}</div>
+            <div>${item.scanned_count}/${item.quantity}</div>
+        `;
+
         itemList.appendChild(listItem);
     });
 
