@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>検品ページ</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>検品ページ</h1>
+    <div>
+        <label for="inputField">ピッキングID/バーコードを入力:</label>
+        <input type="text" id="inputField" placeholder="ピッキングIDまたはバーコードを入力">
+        <button onclick="processInput()">送信</button>
+    </div>
+    
+    <div id="itemListContainer" style="display: none;">
+        <h2>アイテムリスト</h2>
+        <ul id="itemList"></ul>
+    </div>
+    
+    <p id="statusMessage"></p>
+
+    <script src="app.js"></script>
+</body>
+</html>
