@@ -200,6 +200,11 @@ function scanBarcode(barcode) {
                     status: allInspected // 全アイテムが検品済みならstatusをtrueに
                 }).then(() => {
                     document.getElementById("statusMessage").innerText = allInspected ? "全てのアイテムが検品完了しました。" : "アイテムの検品が完了しました。";
+                    
+                    // 検品完了時にリストをリフレッシュ
+                    if (allInspected) {
+                        displayItemList(updatedItems, currentPickingId);
+                    }
                 });
             }
         })
