@@ -117,6 +117,23 @@ function getCurrentUserId() {
 
 let currentPickingId = null; // 現在のピッキングIDを格納
 
+// ページ読み込み時にイベントリスナーを設定
+document.addEventListener("DOMContentLoaded", function () {
+    // ピッキングIDのエンターキー処理
+    document.getElementById("pickingIdInput").addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+            fetchPickingData();
+        }
+    });
+
+    // バーコード入力のエンターキー処理
+    document.getElementById("barcodeInput").addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+            scanBarcode();
+        }
+    });
+});
+
 // ピッキングIDでデータを取得して表示
 function fetchPickingData() {
     const pickingIdInput = document.getElementById("pickingIdInput");
@@ -133,14 +150,17 @@ function fetchPickingData() {
             if (doc.exists) {
                 const data = doc.data();
                 displayItemList(data.items); // アイテムリストを表示
+                document.getElementById("barcodeInput").focus(); // バーコード入力にフォーカス
             } else {
                 alert("該当するピッキングIDが見つかりませんでした。");
                 currentPickingId = null; // ピッキングIDをリセット
+                pickingIdInput.focus(); // フォーカスをピッキングID入力に戻す
             }
         })
         .catch((error) => {
             console.error("エラーが発生しました:", error);
             currentPickingId = null; // エラー発生時もピッキングIDをリセット
+            pickingIdInput.focus(); // フォーカスをピッキングID入力に戻す
         })
         .finally(() => {
             pickingIdInput.value = ""; // フォームをリセット
@@ -212,6 +232,10 @@ function scanBarcode() {
                     // 検品完了時にリストをリフレッシュ
                     if (allInspected) {
                         displayItemList(updatedItems);
+                        currentPickingId = null; // ピッキングIDをリセット
+                        document.getElementById("pickingIdInput").focus(); // フォーカスをピッキングID入力に戻す
+                    } else {
+                        barcodeInput.focus(); // フォーカスをバーコード入力に維持
                     }
                 });
             }
@@ -220,6 +244,6 @@ function scanBarcode() {
             console.error("エラーが発生しました:", error);
         })
         .finally(() => {
-            barcodeInput.value = ""; // フォームをリセット
+            barcodeInput.value = ""; // バーコード入力欄をクリア
         });
 }
