@@ -20,6 +20,7 @@ const clientSettings = {
         item_name: 23,
         item_quantity: 24,
         item_barcode: 25,
+        ins_flg: 26
     },
     clientB: {
         picking_id: 1,
@@ -76,7 +77,8 @@ function parseCSV(text, clientConfig) {
                 item_id: columns[clientConfig.item_id],
                 item_name: columns[clientConfig.item_name],
                 quantity: parseInt(columns[clientConfig.item_quantity], 10),
-                barcode: columns[clientConfig.item_barcode]
+                barcode: columns[clientConfig.item_barcode],
+                ins_flg: 1
             };
 
             // すでにピッキングIDが存在するかチェック
