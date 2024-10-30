@@ -50,13 +50,13 @@ function importCSV() {
     reader.onload = function (event) {
         const uint8Array = new Uint8Array(event.target.result);
         const text = new TextDecoder(encoding).decode(uint8Array);
-        parseCSV(text);
+        parseCSV(text, currentClient); // currentClientを引数として渡す
     };
 
     reader.readAsArrayBuffer(fileInput); // ArrayBufferとして読み込む
 }
 
-function parseCSV(text) {
+function parseCSV(text, clientConfig) {
     const includeHeader = document.getElementById("includeHeader").checked;
     const rows = text.split("\n");
 
@@ -67,7 +67,7 @@ function parseCSV(text) {
         const row = rows[i];
         if (row.trim()) {  // 空行のスキップ
             const columns = row.split(",");
-            addRowToFirestore(columns, currentClient);
+            addRowToFirestore(columns, clientConfig);
         }
     }
 
@@ -89,7 +89,6 @@ function addRowToFirestore(columns, clientConfig) {
         .then(() => console.log("Pickings データが追加されました"))
         .catch(error => console.error("Error adding Pickings data:", error));
 }
-
 
 // ログインユーザーのIDを取得する関数（仮）
 function getCurrentUserId() {
