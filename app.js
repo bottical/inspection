@@ -90,6 +90,7 @@ function addRowToFirestore(columns, clientConfig) {
         .catch(error => console.error("Error adding Pickings data:", error));
 }
 
+
 // ログインユーザーのIDを取得する関数（仮）
 function getCurrentUserId() {
     // 実際のログインユーザー情報を取得する処理をここで実装する必要があります
