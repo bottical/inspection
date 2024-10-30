@@ -205,7 +205,7 @@ function displayItemList(items) {
         }
 
         const listItem = document.createElement("li");
-        listItem.textContent = `${item.item_name} ${item.barcode} - ステータス: ${item.item_status ? '完了' : '未検品'} (${item.scanned_count}/${item.quantity})`;
+        listItem.textContent = `${item.item_name} 【${item.barcode}】 - 状態: ${item.item_status ? '完了' : '未検品'} (${item.scanned_count}/${item.quantity})`;
         listItem.id = `item-${item.item_id}`;
         itemList.appendChild(listItem);
     });
@@ -238,7 +238,7 @@ function scanBarcode() {
 
                         // 表示を更新
                         document.getElementById(`item-${item.item_id}`).textContent = 
-                            `${item.item_name} ${item.barcode} - ステータス: ${item.item_status ? '完了' : '検品中'} (${item.scanned_count}/${item.quantity})`;
+                            `${item.item_name} 【${item.barcode}】 - 状態: ${item.item_status ? '完了' : '検品中'} (${item.scanned_count}/${item.quantity})`;
                     }
 
                     if (!item.item_status) {
