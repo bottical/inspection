@@ -9,7 +9,7 @@ const firebaseConfig = {
 };
 
 // Firebaseを初期化
-const app = firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore(app);
 
 // クライアントごとの列インデックス設定
