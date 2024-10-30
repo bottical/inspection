@@ -21,7 +21,17 @@ h1 {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* ボタンのスタイル */
+/* 入力フォームのスタイル */
+input[type="text"] {
+    width: 300px;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 10px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 button {
     background-color: #0074d9;
     color: white;
@@ -32,7 +42,6 @@ button {
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-top: 10px;
 }
 
 /* ボタンホバーエフェクト */
@@ -41,36 +50,43 @@ button:hover {
     transform: translateY(-2px);
 }
 
-/* 各セクションのスタイル */
-div {
+/* アイテムリストのスタイル */
+#itemListContainer {
     background-color: #ffffff;
-    margin-top: 20px;
     border: 1px solid #ddd;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
     width: 100%;
-    transition: box-shadow 0.3s ease;
+    max-width: 500px;
+    margin-top: 20px;
 }
 
-/* 各セクションのホバーエフェクト */
-div:hover {
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+#itemListContainer h2 {
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 10px;
 }
 
-/* ラベルとチェックボックスのスタイル */
-label {
+/* アイテムリストのスタイル */
+#itemList {
+    list-style: none;
+    padding: 0;
+}
+
+#itemList li {
     font-size: 1em;
-    margin-right: 10px;
-    color: #555;
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
     display: flex;
+    justify-content: space-between;
     align-items: center;
 }
 
-input[type="checkbox"],
-input[type="radio"] {
-    margin-right: 5px;
+/* 検品済みアイテムのスタイル */
+#itemList li.complete {
+    color: #28a745;
+    font-weight: bold;
 }
 
 /* ステータスメッセージ */
@@ -86,7 +102,11 @@ input[type="radio"] {
         font-size: 2em;
     }
 
-    div {
+    input[type="text"] {
+        width: 100%;
+    }
+
+    #itemListContainer {
         padding: 15px;
     }
 
