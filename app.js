@@ -179,7 +179,7 @@ function displayItemList(items) {
         }
 
         const listItem = document.createElement("li");
-        listItem.textContent = `${item.item_name} - 検品済み: ${item.item_status ? '完了' : '未検品'} (${item.scanned_count}/${item.quantity})`;
+        listItem.textContent = `${item.item_name} ${item.barcode}- ステータス: ${item.item_status ? '完了' : '未検品'} (${item.scanned_count}/${item.quantity})`;
         listItem.id = `item-${item.item_id}`;
         itemList.appendChild(listItem);
     });
