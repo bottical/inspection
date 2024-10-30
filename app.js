@@ -15,11 +15,10 @@ const db = firebase.firestore();
 // クライアントごとの列インデックス設定
 const clientSettings = {
     clientA: {
-        picking_id: 0,
+        picking_id: 12,
         user_id: 1,
-        item_id: 2,
-        status: 3,
-        inspection_date: 4,
+        item_id: 22,
+        item_name: 23,
         created_at: 5
     },
     clientB: {
@@ -79,7 +78,7 @@ function addRowToFirestore(columns, clientConfig) {
     const pickingData = {
         picking_id: columns[clientConfig.picking_id],
         user_id: getCurrentUserId(),
-        item_id: db.collection("Items").doc(columns[clientConfig.item_id]), // Itemsのドキュメントを参照
+        item_id: columns[clientConfig.item_id],
         status: false, // 初期状態は未完了
         inspection_date: columns[clientConfig.inspection_date] || null,
         created_at: firebase.firestore.FieldValue.serverTimestamp()
