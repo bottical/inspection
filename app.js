@@ -265,25 +265,26 @@ function scanBarcode() {
             if (doc.exists) {
                 const data = doc.data();
                 let allInspected = true;
-                let itemUpdated = false; // 更新されたアイテムがあるかどうかのフラグ
+                let itemUpdated = false; // スキャンで更新されたアイテムがあるかどうか
 
                 const updatedItems = data.items.map((item) => {
+                    // 同じバーコードを持つアイテムがある場合、まだ完了していない最初のアイテムにのみ適用
                     if (item.barcode === barcode && !itemUpdated) {
                         if (item.scanned_count >= item.quantity) {
-                            // アイテムが数量を超過している場合のみアラートを表示
+                            // すでに設定された数量を超えている場合のみエラーメッセージ
                             alert("このアイテムはすでに設定された数量を超えています。");
                         } else {
-                            // 初めて該当する未検品アイテムが見つかった場合のみ更新
+                            // 検品数を増加させる
                             item.scanned_count = (item.scanned_count || 0) + 1;
                             if (item.scanned_count >= item.quantity) {
-                                item.item_status = true;
+                                item.item_status = true; // 状態を完了に更新
                             }
-                            updateItemDisplay(item); // 表示を更新
-                            itemUpdated = true; // アイテムが更新されたことを示す
+                            updateItemDisplay(item); // 更新されたアイテムを表示に反映
+                            itemUpdated = true; // 1つのアイテムのみ処理するためフラグを設定
                         }
                     }
 
-                    // すべてのアイテムの状態をチェック
+                    // 全体の検品完了状態をチェック
                     if (!item.item_status) {
                         allInspected = false;
                     }
@@ -291,6 +292,7 @@ function scanBarcode() {
                     return item;
                 });
 
+                // 同一バーコードのアイテムがすべて検品完了している場合
                 if (!itemUpdated) {
                     alert("このバーコードのすべてのアイテムは既に設定された数量に達しています。");
                 }
@@ -302,6 +304,7 @@ function scanBarcode() {
                 }).then(() => {
                     document.getElementById("statusMessage").innerText = allInspected ? "全てのアイテムが検品完了しました。" : "アイテムの検品が進行中です。";
                     
+                    // 全アイテムが完了している場合
                     if (allInspected) {
                         displayItemList(updatedItems);
                         currentPickingId = null;
