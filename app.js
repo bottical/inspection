@@ -238,6 +238,13 @@ function updateItemDisplay(item) {
             <div>${item.item_status ? '完了' : '検品中'}</div>
             <div>${item.scanned_count}/${item.quantity}</div>
         `;
+
+        // 完了状態に応じてクラスを動的に設定
+        if (item.item_status) {
+            listItem.classList.add("complete");
+        } else {
+            listItem.classList.remove("complete");
+        }
     } else {
         console.error(`IDが ${item.item_id} の要素が見つかりませんでした`);
     }
