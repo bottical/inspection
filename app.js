@@ -265,7 +265,7 @@ function scanBarcode() {
             if (doc.exists) {
                 const data = doc.data();
                 let allInspected = true;
-                let itemUpdated = false; // 更新されたアイテムがあるかどうか
+                let itemUpdated = false; // スキャンで更新されたアイテムがあるかどうか
 
                 const updatedItems = data.items.map((item) => {
                     // 同じバーコードを持つアイテムがある場合、まだ完了していない最初のアイテムにのみ適用
@@ -275,7 +275,6 @@ function scanBarcode() {
                         if (item.scanned_count >= item.quantity) {
                             item.item_status = true; // 状態を完了に更新
                         }
-                        updateItemDisplay(item); // 更新されたアイテムを表示に反映
                         itemUpdated = true; // 1つのアイテムのみ処理するためフラグを設定
                     }
 
@@ -301,12 +300,14 @@ function scanBarcode() {
                     
                     // 全アイテムが完了している場合
                     if (allInspected) {
-                        displayItemList(updatedItems);
                         currentPickingId = null;
                         document.getElementById("pickingIdInput").focus();
                     } else {
                         barcodeInput.focus();
                     }
+
+                    // すべてのアイテムを再描画
+                    displayItemList(updatedItems);
                 });
             }
         })
