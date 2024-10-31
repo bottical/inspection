@@ -211,6 +211,7 @@ function displayItemList(items) {
         }
 
         const listItem = document.createElement("li");
+        listItem.id = `item-${item.item_id}`; // IDを設定
         listItem.className = item.item_status ? "complete" : "";
 
         // 各項目を列に分けて表示
@@ -254,8 +255,12 @@ function scanBarcode() {
                             }
 
                             // 表示を更新
-                            document.getElementById(`item-${item.item_id}`).textContent = 
-                                `${item.item_name} 【${item.barcode}】 - 状態: ${item.item_status ? '完了' : '検品中'} (${item.scanned_count}/${item.quantity})`;
+                            const listItem = document.getElementById(`item-${item.item_id}`);
+                            if (listItem) {
+                                listItem.textContent = `${item.item_name} 【${item.barcode}】 - 状態: ${item.item_status ? '完了' : '検品中'} (${item.scanned_count}/${item.quantity})`;
+                            } else {
+                                console.error(`IDが ${item.item_id} の要素が見つかりませんでした`);
+                            }
                         }
                     }
 
