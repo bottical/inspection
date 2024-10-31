@@ -228,6 +228,21 @@ function displayItemList(items) {
     itemListContainer.style.display = "block";
 }
 
+// アイテムの表示更新関数（初期表示とスキャン後の表示を統一）
+function updateItemDisplay(item) {
+    const listItem = document.getElementById(`item-${item.item_id}`);
+    if (listItem) {
+        listItem.innerHTML = `
+            <div>${item.item_name}</div>
+            <div>${item.barcode}</div>
+            <div>${item.item_status ? '完了' : '検品中'}</div>
+            <div>${item.scanned_count}/${item.quantity}</div>
+        `;
+    } else {
+        console.error(`IDが ${item.item_id} の要素が見つかりませんでした`);
+    }
+}
+
 // バーコードスキャン機能
 function scanBarcode() {
     const barcodeInput = document.getElementById("barcodeInput");
@@ -255,12 +270,7 @@ function scanBarcode() {
                             }
 
                             // 表示を更新
-                            const listItem = document.getElementById(`item-${item.item_id}`);
-                            if (listItem) {
-                                listItem.textContent = `${item.item_name} 【${item.barcode}】 - 状態: ${item.item_status ? '完了' : '検品中'} (${item.scanned_count}/${item.quantity})`;
-                            } else {
-                                console.error(`IDが ${item.item_id} の要素が見つかりませんでした`);
-                            }
+                            updateItemDisplay(item); // 統一した表示関数で更新
                         }
                     }
 
