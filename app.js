@@ -265,23 +265,18 @@ function scanBarcode() {
             if (doc.exists) {
                 const data = doc.data();
                 let allInspected = true;
-                let itemUpdated = false; // スキャンで更新されたアイテムがあるかどうか
+                let itemUpdated = false; // 更新されたアイテムがあるかどうか
 
                 const updatedItems = data.items.map((item) => {
                     // 同じバーコードを持つアイテムがある場合、まだ完了していない最初のアイテムにのみ適用
-                    if (item.barcode === barcode && !itemUpdated) {
+                    if (item.barcode === barcode && !itemUpdated && item.scanned_count < item.quantity) {
+                        // 検品数を増加させる
+                        item.scanned_count = (item.scanned_count || 0) + 1;
                         if (item.scanned_count >= item.quantity) {
-                            // すでに設定された数量を超えている場合のみエラーメッセージ
-                            alert("このアイテムはすでに設定された数量を超えています。");
-                        } else {
-                            // 検品数を増加させる
-                            item.scanned_count = (item.scanned_count || 0) + 1;
-                            if (item.scanned_count >= item.quantity) {
-                                item.item_status = true; // 状態を完了に更新
-                            }
-                            updateItemDisplay(item); // 更新されたアイテムを表示に反映
-                            itemUpdated = true; // 1つのアイテムのみ処理するためフラグを設定
+                            item.item_status = true; // 状態を完了に更新
                         }
+                        updateItemDisplay(item); // 更新されたアイテムを表示に反映
+                        itemUpdated = true; // 1つのアイテムのみ処理するためフラグを設定
                     }
 
                     // 全体の検品完了状態をチェック
@@ -292,7 +287,7 @@ function scanBarcode() {
                     return item;
                 });
 
-                // 同一バーコードのアイテムがすべて検品完了している場合
+                // 対象アイテムがすべて検品完了の場合のみエラーメッセージ
                 if (!itemUpdated) {
                     alert("このバーコードのすべてのアイテムは既に設定された数量に達しています。");
                 }
