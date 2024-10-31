@@ -268,16 +268,22 @@ function scanBarcode() {
                 let itemUpdated = false; // 更新されたアイテムがあるかどうかのフラグ
 
                 const updatedItems = data.items.map((item) => {
-                    if (item.barcode === barcode && !itemUpdated && item.scanned_count < item.quantity) {
-                        // 初めて該当する未検品アイテムが見つかった場合のみ更新
-                        item.scanned_count = (item.scanned_count || 0) + 1;
+                    if (item.barcode === barcode && !itemUpdated) {
                         if (item.scanned_count >= item.quantity) {
-                            item.item_status = true;
+                            // アイテムが数量を超過している場合のみアラートを表示
+                            alert("このアイテムはすでに設定された数量を超えています。");
+                        } else {
+                            // 初めて該当する未検品アイテムが見つかった場合のみ更新
+                            item.scanned_count = (item.scanned_count || 0) + 1;
+                            if (item.scanned_count >= item.quantity) {
+                                item.item_status = true;
+                            }
+                            updateItemDisplay(item); // 表示を更新
+                            itemUpdated = true; // アイテムが更新されたことを示す
                         }
-                        updateItemDisplay(item); // 表示を更新
-                        itemUpdated = true; // アイテムが更新されたことを示す
                     }
 
+                    // すべてのアイテムの状態をチェック
                     if (!item.item_status) {
                         allInspected = false;
                     }
@@ -289,7 +295,7 @@ function scanBarcode() {
                     alert("このバーコードのすべてのアイテムは既に設定された数量に達しています。");
                 }
 
-                // Firestoreに更新
+                // Firestoreにデータを更新
                 db.collection("Pickings").doc(currentPickingId).update({
                     items: updatedItems,
                     status: allInspected
