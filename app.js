@@ -158,6 +158,9 @@ function fetchPickingData() {
                 } else {
                     displayItemList(data.items);
                     document.getElementById("barcodeInput").focus();
+// 検品中のピッキングIDを表示
+                    document.getElementById("currentPickingIdDisplay").textContent = `現在検品中のピッキングID: ${currentPickingId}`;
+
                 }
             } else {
                 alert("該当するピッキングIDが見つかりませんでした。");
@@ -302,6 +305,8 @@ function scanBarcode() {
                     if (allInspected) {
                         currentPickingId = null;
                         document.getElementById("pickingIdInput").focus();
+                        document.getElementById("currentPickingIdDisplay").textContent = ""; // ピッキングID表示をクリア
+
                     } else {
                         barcodeInput.focus();
                     }
