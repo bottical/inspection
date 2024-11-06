@@ -79,7 +79,7 @@ function parseCSV(text, clientConfig) {
                 quantity: parseInt(columns[clientConfig.item_quantity], 10),
                 barcode: columns[clientConfig.item_barcode],
                 ins_flg: 1,
-                item_status: false
+                item_status: false,
                 scanned_count: 0
             };
 
