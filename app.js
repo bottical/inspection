@@ -80,6 +80,7 @@ function parseCSV(text, clientConfig) {
                 barcode: columns[clientConfig.item_barcode],
                 ins_flg: 1,
                 item_status: false
+                scanned_count: 0
             };
 
             // すでにピッキングIDが存在するかチェック
