@@ -19,8 +19,8 @@ const clientSettings = {
         item_name: 23,
         item_quantity: 24,
         item_barcode: 25,
-        recipient_name: 6, // 届け先氏名
-        shipment_date: 21, // 発送日
+        recipient_name: 5, // 届け先氏名
+        shipment_date: 20, // 発送日
         ins_flg: 26
     },
     clientB: {
@@ -29,8 +29,8 @@ const clientSettings = {
         item_id: 0,
         item_quantity: 3,
         item_barcode: 4,
-        recipient_name: 6, // 届け先氏名
-        shipment_date: 21, // 発送日
+        recipient_name: 5, // 届け先氏名
+        shipment_date: 20, // 発送日
         created_at: 3
     }
     // 他のクライアントの設定も同様に追加
