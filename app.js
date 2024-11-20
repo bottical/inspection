@@ -12,7 +12,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// クライアントごとの列インデックス設定
 const clientSettings = {
     clientA: {
         picking_id: 12,
@@ -20,6 +19,8 @@ const clientSettings = {
         item_name: 23,
         item_quantity: 24,
         item_barcode: 25,
+        recipient_name: 6, // 届け先氏名
+        shipment_date: 21, // 発送日
         ins_flg: 26
     },
     clientB: {
@@ -28,6 +29,8 @@ const clientSettings = {
         item_id: 0,
         item_quantity: 3,
         item_barcode: 4,
+        recipient_name: 6, // 届け先氏名
+        shipment_date: 21, // 発送日
         created_at: 3
     }
     // 他のクライアントの設定も同様に追加
@@ -92,6 +95,8 @@ function parseCSV(text, clientConfig) {
                 pickingsData[pickingId] = {
                     picking_id: pickingId,
                     user_id: getCurrentUserId(),
+                    recipient_name: columns[clientConfig.recipient_name], // 届け先氏名
+                    shipment_date: columns[clientConfig.shipment_date], // 発送日
                     items: [itemData],
                     status: false,
                     created_at: firebase.firestore.FieldValue.serverTimestamp()
