@@ -281,8 +281,9 @@ function scanBarcode() {
     const barcode = barcodeInput.value.trim();
 
     if (!barcode || !currentPickingId) {
-        playSound('error.mp3'); // エラー音
+        playSound('error.mp3', () => { // エラー音
         alert("バーコードとピッキングIDを入力してください。");
+        });
         return;
     }
 
@@ -319,11 +320,13 @@ function scanBarcode() {
                     // 対象バーコードが検品アイテム内に存在しない場合のチェック
                     const isBarcodeInItems = data.items.some((item) => item.barcode === barcode);
                     if (!isBarcodeInItems) {
-                        playSound('error.mp3'); // エラー音
+                        playSound('error.mp3', () => { // エラー音
                         alert("このバーコードは検品対象外です。");
+                        });
                     } else {
-                        playSound('error.mp3'); // エラー音
+                        playSound('error.mp3', () => { // エラー音
                         alert("このバーコードのアイテムは既に設定された数量検品済みです。");
+                        });
                     }
                 } else {
                     playSound('success.mp3'); // 成功音
@@ -349,7 +352,8 @@ function scanBarcode() {
             }
         })
         .catch((error) => {
-            playSound('error.mp3'); // エラー音
+            playSound('error.mp3', () => { // エラー音
+            });
             console.error("エラーが発生しました:", error);
         })
         .finally(() => {
@@ -361,4 +365,7 @@ function scanBarcode() {
 function playSound(url) {
     const audio = new Audio(url);
     audio.play();
+    
+    // 音声再生の長さに基づいてコールバックを遅延実行
+    audio.onended = callback;
 }
