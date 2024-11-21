@@ -340,8 +340,6 @@ function scanBarcode() {
                         barcodeInput.focus();
                     }
 
-                    // すべてのアイテムを再描画
-                    displayItemList(updatedItems);
                 });
             }
         })
