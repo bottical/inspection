@@ -261,8 +261,14 @@ function updateItemDisplay(item) {
         // 完了状態に応じてクラスを動的に設定
         if (item.item_status) {
             listItem.classList.add("complete");
+            
         } else {
             listItem.classList.remove("complete");
+        // すべてのhighlightクラスを削除してから現在のアイテムに付与
+            document.querySelectorAll("#itemList li").forEach((el) => {
+            el.classList.remove("highlight");
+            });
+            listItem.classList.add("highlight");
         }
     } else {
         console.error(`IDが ${item.item_id} の要素が見つかりませんでした`);
@@ -295,6 +301,8 @@ function scanBarcode() {
                             item.item_status = true; // 状態を完了に更新
                         }
                         itemUpdated = true; // 1つのアイテムのみ処理するためフラグを設定
+                        // 表示更新時にハイライト適用
+                        updateItemDisplay(item);
                     }
 
                     // 全体の検品完了状態をチェック
