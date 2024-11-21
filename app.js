@@ -362,7 +362,7 @@ function scanBarcode() {
 }
 
 //オーディオ再生関数
-function playSound(url) {
+function playSound(url, callback) {
     const audio = new Audio(url);
     audio.play();
     
