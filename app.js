@@ -163,21 +163,31 @@ function fetchPickingData() {
                     pickingIdInput.focus();
                 } else {
                     displayItemList(data.items);
-                    document.getElementById("barcodeInput").focus();
+
 // 検品中のピッキングIDを表示
                     document.getElementById("currentPickingIdDisplay").textContent = `現在検品中のピッキングID: ${currentPickingId}`;
+                    	// 届け先氏名と発送日を表示
+                    document.getElementById("recipientNameDisplay").textContent = `届け先氏名: ${data.recipient_name || "未設定"}`;
+                    document.getElementById("shipmentDateDisplay").textContent = `発送日: ${data.shipment_date || "未設定"}`;
+                    document.getElementById("barcodeInput").focus();
 
                 }
             } else {
                 alert("該当するピッキングIDが見つかりませんでした。");
                 currentPickingId = null;
                 pickingIdInput.focus();
+                document.getElementById("currentPickingIdDisplay").textContent = ""; // ピッキングID表示をクリア
+                document.getElementById("recipientNameDisplay").textContent = "届け先氏名: 不明"; // 届け先氏名をクリア
+                document.getElementById("shipmentDateDisplay").textContent = "発送日: 不明"; // 発送日をクリア
             }
         })
         .catch((error) => {
             console.error("エラーが発生しました:", error);
             currentPickingId = null;
             pickingIdInput.focus();
+            	document.getElementById("currentPickingIdDisplay").textContent = ""; // エラー発生時もクリア
+                document.getElementById("recipientNameDisplay").textContent = "届け先氏名: 不明"; // エラー時もクリア
+                document.getElementById("shipmentDateDisplay").textContent = "発送日: 不明"; // エラー時もクリア
         })
         .finally(() => {
             pickingIdInput.value = "";
@@ -310,7 +320,7 @@ function scanBarcode() {
                     // 全アイテムが完了している場合
                     if (allInspected) {
                         document.getElementById("pickingIdInput").focus();
-                        document.getElementById("currentPickingIdDisplay").textContent = `検品完了したピッキングID: ${currentPickingId}`;
+                        document.getElementById("currentPickingIdDisplay").textContent = `現在検品中のピッキングID: ${currentPickingId}`;
 
                     } else {
                         barcodeInput.focus();
