@@ -100,6 +100,14 @@ button:hover {
     margin-top: 15px;
 }
 
+/* 新しく読み込んだアイテムのスタイル */
+#itemList li.highlight {
+    color: #ff4500;
+    font-weight: bold;
+    background-color: #fff3e0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 /* レスポンシブ対応 */
 @media (max-width: 600px) {
     h1 {
