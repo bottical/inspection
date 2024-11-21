@@ -311,7 +311,7 @@ function scanBarcode() {
                     if (allInspected) {
                         currentPickingId = null;
                         document.getElementById("pickingIdInput").focus();
-                        document.getElementById("currentPickingIdDisplay").textContent = ""; // ピッキングID表示をクリア
+                        document.getElementById("currentPickingIdDisplay").textContent = `現在検品中のピッキングID: ${currentPickingId}`;
 
                     } else {
                         barcodeInput.focus();
