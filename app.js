@@ -286,6 +286,8 @@ function scanBarcode() {
         });
         return;
     }
+    // 成功音を再生（ピッキングIDが入力されている場合）
+    playSound('success.mp3');
 
     db.collection("Pickings").doc(currentPickingId).get()
         .then((doc) => {
