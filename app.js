@@ -282,6 +282,7 @@ function scanBarcode() {
 
     if (!barcode || !currentPickingId) {
         alert("バーコードとピッキングIDを入力してください。");
+        playSound('error.mp3'); // エラー音
         return;
     }
 
@@ -319,9 +320,13 @@ function scanBarcode() {
                     const isBarcodeInItems = data.items.some((item) => item.barcode === barcode);
                     if (!isBarcodeInItems) {
                         alert("このバーコードは検品対象外です。");
+                        playSound('error.mp3'); // エラー音
                     } else {
-                        alert("このバーコードのすべてのアイテムは既に設定された数量に達しています。");
+                        alert("このバーコードのアイテムは既に設定された数量検品済みです。");
+                        playSound('error.mp3'); // エラー音
                     }
+                } else {
+                    playSound('/assets/success.mp3'); // 成功音
                 }
 
                 // Firestoreにデータを更新
@@ -345,6 +350,7 @@ function scanBarcode() {
         })
         .catch((error) => {
             console.error("エラーが発生しました:", error);
+            playSound('error.mp3'); // エラー音
         })
         .finally(() => {
             barcodeInput.value = "";
