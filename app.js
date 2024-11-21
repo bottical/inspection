@@ -144,7 +144,9 @@ function fetchPickingData() {
     const pickingId = pickingIdInput.value.trim();
 
     if (!pickingId) {
-        alert("ピッキングIDを入力してください。");
+        playSound('error.mp3', () => {
+            alert("ピッキングIDを入力してください。");
+        });
         return;
     }
 
@@ -158,22 +160,26 @@ function fetchPickingData() {
             if (doc.exists) {
                 const data = doc.data();
                 if (data.status === true) {
-                    alert("このピッキングIDはすでに検品済みです。");
+                    playSound('error.mp3', () => {
+                        alert("このピッキングIDはすでに検品済みです。");
+                    });
                     currentPickingId = null;
                     pickingIdInput.focus();
                 } else {
+                    playSound('success.mp3'); // 成功音
                     displayItemList(data.items);
 
-// 検品中のピッキングIDを表示
+                    // 検品中のピッキングIDを表示
                     document.getElementById("currentPickingIdDisplay").textContent = `現在検品中のピッキングID: ${currentPickingId}`;
-                    	// 届け先氏名と発送日を表示
+                    // 届け先氏名と発送日を表示
                     document.getElementById("recipientNameDisplay").textContent = `届け先氏名: ${data.recipient_name || "未設定"}`;
                     document.getElementById("shipmentDateDisplay").textContent = `発送日: ${data.shipment_date || "未設定"}`;
                     document.getElementById("barcodeInput").focus();
-
                 }
             } else {
-                alert("該当するピッキングIDが見つかりませんでした。");
+                playSound('error.mp3', () => {
+                    alert("該当するピッキングIDが見つかりませんでした。");
+                });
                 currentPickingId = null;
                 pickingIdInput.focus();
                 document.getElementById("currentPickingIdDisplay").textContent = ""; // ピッキングID表示をクリア
@@ -182,17 +188,18 @@ function fetchPickingData() {
             }
         })
         .catch((error) => {
+            playSound('error.mp3', () => {
+                alert("エラーが発生しました。");
+            });
             console.error("エラーが発生しました:", error);
             currentPickingId = null;
             pickingIdInput.focus();
-            	document.getElementById("currentPickingIdDisplay").textContent = ""; // エラー発生時もクリア
-                document.getElementById("recipientNameDisplay").textContent = "届け先氏名: 不明"; // エラー時もクリア
-                document.getElementById("shipmentDateDisplay").textContent = "発送日: 不明"; // エラー時もクリア
         })
         .finally(() => {
             pickingIdInput.value = "";
         });
 }
+
 
 // 異なるピッキングIDが入力された場合にscanned_countをリセット
 function resetScannedCount(pickingId) {
@@ -286,8 +293,7 @@ function scanBarcode() {
         });
         return;
     }
-    // 成功音を再生（ピッキングIDが入力されている場合）
-    playSound('success.mp3');
+
 
     db.collection("Pickings").doc(currentPickingId).get()
         .then((doc) => {
