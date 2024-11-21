@@ -326,7 +326,7 @@ function scanBarcode() {
                         playSound('error.mp3'); // エラー音
                     }
                 } else {
-                    playSound('/assets/success.mp3'); // 成功音
+                    playSound('success.mp3'); // 成功音
                 }
 
                 // Firestoreにデータを更新
