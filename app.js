@@ -350,3 +350,9 @@ function scanBarcode() {
             barcodeInput.value = "";
         });
 }
+
+//オーディオ再生関数
+function playSound(url) {
+    const audio = new Audio(url);
+    audio.play();
+}
