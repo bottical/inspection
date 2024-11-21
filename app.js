@@ -305,9 +305,15 @@ function scanBarcode() {
                     return item;
                 });
 
-                // 対象アイテムがすべて検品完了の場合のみエラーメッセージ
+                // 対象アイテムが無いもしくは、すべて検品完了の場合のみエラーメッセージ
                 if (!itemUpdated) {
-                    alert("このバーコードのすべてのアイテムは既に設定された数量に達しています。");
+                    // 対象バーコードが検品アイテム内に存在しない場合のチェック
+                    const isBarcodeInItems = data.items.some((item) => item.barcode === barcode);
+                    if (!isBarcodeInItems) {
+                        alert("このバーコードは検品対象外です。");
+                    } else {
+                        alert("このバーコードのすべてのアイテムは既に設定された数量に達しています。");
+                    }
                 }
 
                 // Firestoreにデータを更新
