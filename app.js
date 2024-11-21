@@ -309,9 +309,8 @@ function scanBarcode() {
                     
                     // 全アイテムが完了している場合
                     if (allInspected) {
-                        currentPickingId = null;
                         document.getElementById("pickingIdInput").focus();
-                        document.getElementById("currentPickingIdDisplay").textContent = `現在検品中のピッキングID: ${currentPickingId}`;
+                        document.getElementById("currentPickingIdDisplay").textContent = `検品完了したピッキングID: ${currentPickingId}`;
 
                     } else {
                         barcodeInput.focus();
